@@ -11,3 +11,6 @@
 # DB schema
 
 ![db_schema](docs/db_schema.png)
+
+# API docs
+[API docs](docs/api.md)
