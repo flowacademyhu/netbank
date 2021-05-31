@@ -1,5 +1,6 @@
 package hu.flowacademy.netbank.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Account {
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
     @ManyToOne
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private User owner;
     private String accountNumber;
     private Currency currency;

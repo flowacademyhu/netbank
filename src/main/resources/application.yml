@@ -1,6 +1,12 @@
 server:
   port: 8001
 
+logging:
+  level:
+    hu:
+      flowacademy:
+        netbank: DEBUG
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/netbank
