@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  db:
+    image: percona:ps-8
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: netbank
+      MYSQL_PASSWORD: netbank
+      MYSQL_DATABASE: netbank
+      MYSQL_ROOT_PASSWORD: password
