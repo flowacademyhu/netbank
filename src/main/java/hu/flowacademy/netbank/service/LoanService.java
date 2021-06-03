@@ -1,6 +1,5 @@
 package hu.flowacademy.netbank.service;
 
-import hu.flowacademy.netbank.bootstrap.InitDataLoader;
 import hu.flowacademy.netbank.dto.LoanRequestDTO;
 import hu.flowacademy.netbank.dto.TransactionCreateDTO;
 import hu.flowacademy.netbank.model.Account;
@@ -18,10 +17,10 @@ public class LoanService {
     private final UserService userService;
     private final AccountService accountService;
 
-    public void request(LoanRequestDTO loanRequest) {
+    public void request(Currency currency, LoanRequestDTO loanRequest) {
         Account bankAccount = userService.getBank()
                 .flatMap(user ->
-                        accountService.findByOwnerAndCurrency(user.getId(), Currency.HUF)).orElseThrow();
+                        accountService.findByOwnerAndCurrency(user.getId(), currency)).orElseThrow();
         transactionService.save(
                 TransactionCreateDTO.builder()
                         .amount(loanRequest.getAmount())

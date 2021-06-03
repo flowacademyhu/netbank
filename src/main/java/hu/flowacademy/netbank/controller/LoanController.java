@@ -1,6 +1,7 @@
 package hu.flowacademy.netbank.controller;
 
 import hu.flowacademy.netbank.dto.LoanRequestDTO;
+import hu.flowacademy.netbank.model.Currency;
 import hu.flowacademy.netbank.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +16,12 @@ public class LoanController {
 
     private final LoanService loanService;
 
-    @PatchMapping
+    @PatchMapping("/{currency}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void requestLoan(@RequestBody LoanRequestDTO loanRequest) {
-        log.debug("Loan requested with params: {}", loanRequest);
-        loanService.request(loanRequest);
+    public void requestLoan(@PathVariable Currency currency,
+                            @RequestBody LoanRequestDTO loanRequest) {
+        log.debug("Loan requested with currency and params: {} {}", currency, loanRequest);
+        loanService.request(currency, loanRequest);
     }
 
 }

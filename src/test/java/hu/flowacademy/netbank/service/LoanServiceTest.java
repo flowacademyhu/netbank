@@ -1,6 +1,5 @@
 package hu.flowacademy.netbank.service;
 
-import com.zaxxer.hikari.SQLExceptionOverride;
 import hu.flowacademy.netbank.dto.LoanRequestDTO;
 import hu.flowacademy.netbank.model.Account;
 import hu.flowacademy.netbank.model.Currency;
@@ -10,14 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +43,7 @@ public class LoanServiceTest {
                 ));
         when(transactionService.save(any())).thenReturn(Transaction.builder().build());
 
-        loanService.request(LoanRequestDTO.builder()
+        loanService.request(Currency.HUF, LoanRequestDTO.builder()
                 .amount(BigDecimal.valueOf(1000))
                 .accountId(accountId)
                 .build());
