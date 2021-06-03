@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

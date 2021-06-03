@@ -16,4 +16,9 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+
+app:
+  rootPassword: admin123
+  exchangeStrategy: spring # can be spring or jdk
+  exchangeUrl: https://api.frankfurter.app/latest

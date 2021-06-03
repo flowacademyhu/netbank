@@ -1,5 +1,6 @@
 package hu.flowacademy.netbank.service;
 
+import hu.flowacademy.netbank.bootstrap.InitDataLoader;
 import hu.flowacademy.netbank.exception.ValidationException;
 import hu.flowacademy.netbank.model.Role;
 import hu.flowacademy.netbank.model.User;
@@ -47,6 +48,10 @@ public class UserService {
 
     public Optional<User> findOne(String id) {
         return userRepository.findById(id);
+    }
+
+    Optional<User> getBank() {
+        return userRepository.findFirstByEmail(InitDataLoader.BANK_USER_EMAIL);
     }
 
     private void validate(User user) {

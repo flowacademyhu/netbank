@@ -2,6 +2,7 @@ package hu.flowacademy.netbank.service;
 
 import hu.flowacademy.netbank.dto.AddMoneyDTO;
 import hu.flowacademy.netbank.model.Account;
+import hu.flowacademy.netbank.model.Currency;
 import hu.flowacademy.netbank.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,10 @@ public class AccountService {
 
     Account update(Account account) {
         return accountRepository.save(account);
+    }
+
+    Optional<Account> findByOwnerAndCurrency(String ownerId, Currency currency) {
+        return accountRepository.findFirstByOwner_IdAndCurrency(ownerId, currency);
     }
 
 }
