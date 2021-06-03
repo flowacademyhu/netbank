@@ -8,3 +8,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create # create, create-drop, update, validate, none
+
+app:
+  rootPassword: admin123
+  exchangeStrategy: spring # can be spring or jdk
+  exchangeUrl: https://api.frankfurter.app/latest

@@ -1,6 +1,7 @@
 package hu.flowacademy.netbank.service;
 
 import hu.flowacademy.netbank.dto.AddMoneyDTO;
+import hu.flowacademy.netbank.exception.ValidationException;
 import hu.flowacademy.netbank.model.Account;
 import hu.flowacademy.netbank.model.Currency;
 import hu.flowacademy.netbank.repository.AccountRepository;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -19,19 +21,23 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Account save(Account account) {
-        // TODO validate
-        return accountRepository.save(account);
+        validate(account);
+        return accountRepository.save(account.toBuilder()
+                .accountNumber(UUID.randomUUID().toString())
+                .build());
     }
 
     public void addMoney(String id, AddMoneyDTO addMoneyDTO) {
-        findOne(id).ifPresent(account ->
-                    // TODO validate currency
-                    accountRepository.save(
-                            account.toBuilder()
-                                    .amount(account.getAmount().add(addMoneyDTO.getAmount()))
-                                    .build()
-                    )
-                );
+        findOne(id)
+                .filter(account -> account.getCurrency().equals(addMoneyDTO.getCurrency()))
+                .ifPresentOrElse(account -> accountRepository.save(
+                        account.toBuilder()
+                                .amount(account.getAmount().add(addMoneyDTO.getAmount()))
+                                .build()
+                        )
+                        , () -> {
+                            throw new ValidationException("unable to add money to the account");
+                        });
     }
 
     public Optional<Account> findOne(String id) {
@@ -48,6 +54,18 @@ public class AccountService {
 
     Optional<Account> findByOwnerAndCurrency(String ownerId, Currency currency) {
         return accountRepository.findFirstByOwner_IdAndCurrency(ownerId, currency);
+    }
+
+    private void validate(Account account) {
+        if (account.getCurrency() == null) {
+            throw new ValidationException("missing currency");
+        }
+        if (account.getAmount() == null) {
+            throw new ValidationException("missing amount");
+        }
+        if (account.getOwner() == null) {
+            throw new ValidationException("missing account owner");
+        }
     }
 
 }
