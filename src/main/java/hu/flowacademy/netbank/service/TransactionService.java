@@ -5,6 +5,7 @@ import hu.flowacademy.netbank.model.Account;
 import hu.flowacademy.netbank.model.Transaction;
 import hu.flowacademy.netbank.model.TransactionStatus;
 import hu.flowacademy.netbank.repository.TransactionRepository;
+import hu.flowacademy.netbank.service.exchange.ExchangeStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
+    private final ExchangeStrategy exchangeStrategy;
 
     public Transaction save(TransactionCreateDTO transaction) {
         Account sender = accountService.findOne(transaction.getSenderAccountId()).orElseThrow();
@@ -52,7 +54,7 @@ public class TransactionService {
                         .currentExchangeRate(calculateExchangeRate(transaction.getReceiver(), transaction.getSender()))
                         .status(TransactionStatus.REVERTED)
                         .createdAt(LocalDateTime.now())
-                .build()
+                        .build()
         );
 
         updateAccount(transaction, transaction.getReceiver(), transaction.getSender());
@@ -70,9 +72,8 @@ public class TransactionService {
         if (sender.getCurrency().equals(receiver.getCurrency())) {
             return BigDecimal.ONE;
         }
-        // TODO fetch it from www.frankfurter.app
-        throw new IllegalArgumentException();
-//        return null;
+
+        return exchangeStrategy.exchange(sender.getCurrency(), receiver.getCurrency());
     }
 
     private void updateAccount(Transaction transaction, Account sender, Account receiver) {
@@ -82,10 +83,12 @@ public class TransactionService {
                         .build()
         );
 
-        // TODO handle if currencies aren't match
         accountService.update(
                 receiver.toBuilder()
-                        .amount(receiver.getAmount().add(transaction.getAmount()))
+                        .amount(receiver.getAmount().add(
+                                transaction.getAmount().multiply(calculateExchangeRate(sender, receiver)
+                                ))
+                        )
                         .build()
         );
     }

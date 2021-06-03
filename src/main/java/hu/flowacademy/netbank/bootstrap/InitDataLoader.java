@@ -22,8 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InitDataLoader implements CommandLineRunner {
 
-    public static final String BANK_USER_ID = "272ddd51-ab23-4584-93eb-152bb7baae53";
-    public static final String BANK_ACCOUNT_ID = "51f79ede-00b4-4c22-be73-11e871ff492b";
+    public static final String BANK_USER_EMAIL = "bank@example.com";
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
@@ -33,21 +32,19 @@ public class InitDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User owner = userRepository.findById(BANK_USER_ID)
+        User owner = userRepository.findFirstByEmail(BANK_USER_EMAIL)
                 .orElseGet(() -> userRepository.save(
                         User.builder()
-                                .id(BANK_USER_ID)
                                 .fullName("bank")
                                 .password(rootPassword)
                                 .role(Role.ADMIN)
-                                .email("bank@example.com")
+                                .email(BANK_USER_EMAIL)
                                 .build()
                 ));
-        accountRepository.findById(BANK_ACCOUNT_ID)
+        accountRepository.findFirstByOwner_IdAndCurrency(owner.getId(), Currency.HUF)
                 .orElseGet(() -> accountRepository.save(
                         Account.builder()
-                                .id(BANK_ACCOUNT_ID)
-                                .amount(BigDecimal.valueOf(Long.MAX_VALUE))
+                                .amount(BigDecimal.valueOf(Integer.MAX_VALUE))
                                 .owner(owner)
                                 .currency(Currency.HUF)
                                 .accountNumber(UUID.randomUUID().toString())

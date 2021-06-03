@@ -3,6 +3,8 @@ package hu.flowacademy.netbank.service;
 import hu.flowacademy.netbank.bootstrap.InitDataLoader;
 import hu.flowacademy.netbank.dto.LoanRequestDTO;
 import hu.flowacademy.netbank.dto.TransactionCreateDTO;
+import hu.flowacademy.netbank.model.Account;
+import hu.flowacademy.netbank.model.Currency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoanService {
 
     private final TransactionService transactionService;
+    private final UserService userService;
+    private final AccountService accountService;
 
     public void request(LoanRequestDTO loanRequest) {
+        Account bankAccount = userService.getBank()
+                .flatMap(user ->
+                        accountService.findByOwnerAndCurrency(user.getId(), Currency.HUF)).orElseThrow();
         transactionService.save(
                 TransactionCreateDTO.builder()
                         .amount(loanRequest.getAmount())
-                        .senderAccountId(InitDataLoader.BANK_ACCOUNT_ID)
+                        .senderAccountId(bankAccount.getId())
                         .receiverAccountId(loanRequest.getAccountId())
                         .build()
         );
