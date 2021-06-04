@@ -27,18 +27,18 @@ class AccountControllerTest {
     public void beforeAll() {
         RestAssured.port = port;
         User signedUp = UserHelper.signUp();
-        user = UserHelper.getUserByUsername(LoginHelper.login(signedUp.getEmail(), signedUp.getPassword()), signedUp);
+        user = UserHelper.getUserByUsername(LoginHelper.login(signedUp.getEmail()), signedUp);
     }
 
     @Test
     public void testCreateAccount() {
-        String token = LoginHelper.login(user.getEmail(), user.getPassword());
+        String token = LoginHelper.login(user.getEmail());
         create(token, user);
     }
 
     @Test
     public void testAddMoneyAccount() {
-        String token = LoginHelper.login(user.getEmail(), user.getPassword());
+        String token = LoginHelper.login(user.getEmail());
         Account created = create(token, user);
         Account account = findAll(token).stream().filter(a -> a.getOwner().equals(user)
                 && a.getCurrency().equals(created.getCurrency())).findFirst().orElseThrow();

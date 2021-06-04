@@ -37,7 +37,7 @@ class UserControllerTest {
     @Test
     public void testUserUpdate() {
         User createdUser = signUp();
-        String token = LoginHelper.login(createdUser.getEmail(), createdUser.getPassword());
+        String token = LoginHelper.login(createdUser.getEmail());
 
         User user = getUserByUsername(token, createdUser);
 
@@ -53,7 +53,7 @@ class UserControllerTest {
     @Test
     public void testDeleteUser() {
         User createdUser = signUp();
-        String token = LoginHelper.login(createdUser.getEmail(), createdUser.getPassword());
+        String token = LoginHelper.login(createdUser.getEmail());
         User user = getUserByUsername(token, createdUser);
         delete(token, user.getId());
     }
