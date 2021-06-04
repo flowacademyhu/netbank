@@ -20,7 +20,7 @@ public class AccountHelper {
     public static final String API_ACCOUNTS = "/api/accounts";
     public static Faker faker = new Faker();
 
-    public static Account create(User owner) {
+    public static Account create(String token, User owner) {
         Account account = Account.builder()
                 .amount(BigDecimal.valueOf(faker.number().numberBetween(10000, 1000000)))
                 .currency(getRandomCurrency())
@@ -30,6 +30,7 @@ public class AccountHelper {
         given()
                 .log().all()
                 .body(account)
+                .header(LoginHelper.buildAuthorization(token))
                 .contentType(ContentType.JSON)
         .when()
                 .post(API_ACCOUNTS)
@@ -40,7 +41,7 @@ public class AccountHelper {
         return account;
     }
 
-    public static void addMoney(String id, Currency currency) {
+    public static void addMoney(String token, String id, Currency currency) {
         AddMoneyDTO account = AddMoneyDTO.builder()
                 .amount(BigDecimal.valueOf(faker.number().numberBetween(10000, 1000000)))
                 .currency(currency)
@@ -49,6 +50,7 @@ public class AccountHelper {
         given()
                 .log().all()
                 .body(account)
+                .header(LoginHelper.buildAuthorization(token))
                 .contentType(ContentType.JSON)
         .when()
                 .put(API_ACCOUNTS+"/"+id)
@@ -57,9 +59,10 @@ public class AccountHelper {
                 .statusCode(204);
     }
 
-    public static Account findOne(String id) {
+    public static Account findOne(String token, String id) {
         return given()
                 .log().all()
+                .header(LoginHelper.buildAuthorization(token))
                 .contentType(ContentType.JSON)
         .when()
                 .get(API_ACCOUNTS+"/"+id)
@@ -69,9 +72,10 @@ public class AccountHelper {
                 .extract().body().as(Account.class);
     }
 
-    public static List<Account> findAll() {
+    public static List<Account> findAll(String token) {
         return given()
                 .log().all()
+                .header(LoginHelper.buildAuthorization(token))
                 .contentType(ContentType.JSON)
         .when()
                 .get(API_ACCOUNTS)

@@ -6,6 +6,7 @@ import hu.flowacademy.netbank.model.Role;
 import hu.flowacademy.netbank.model.User;
 import hu.flowacademy.netbank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,12 +20,14 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User save(User user) {
         validate(user);
         return userRepository.save(
                 user.toBuilder()
                         .role(Role.USER)
+                        .password(passwordEncoder.encode(user.getPassword()))
                         .build()
         );
     }

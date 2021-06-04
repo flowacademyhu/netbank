@@ -25,6 +25,7 @@ public class Account {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private User owner;
     private String accountNumber;
+    @Enumerated(EnumType.STRING)
     private Currency currency;
     private BigDecimal amount;
 }

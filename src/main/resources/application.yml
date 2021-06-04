@@ -22,3 +22,4 @@ app:
   rootPassword: admin123
   exchangeStrategy: spring # can be spring or jdk
   exchangeUrl: https://api.frankfurter.app/latest
+  jwtHmac: f6cf0b0044d6f75d024aaf55a49f206be9276b9d42b6f493c229e33c9c66fb30f8f410adcc1cad4b8ac346d6d8580c73ba0ee90003b0c24faf7d15c6f2bf76a5

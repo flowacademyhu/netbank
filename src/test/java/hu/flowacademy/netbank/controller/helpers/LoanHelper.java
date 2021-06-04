@@ -13,9 +13,10 @@ public class LoanHelper {
 
     public static final String API_LOANS = "/api/loans";
 
-    public static void requestLoan(String accountId, Currency currency, BigDecimal amount) {
+    public static void requestLoan(String token, String accountId, Currency currency, BigDecimal amount) {
         given()
             .log().all()
+            .header(LoginHelper.buildAuthorization(token))
             .body(LoanRequestDTO.builder()
                     .accountId(accountId)
                     .amount(amount)
