@@ -1,13 +1,9 @@
 package hu.flowacademy.netbank.controller.helpers;
 
 import com.github.javafaker.Faker;
-import hu.flowacademy.netbank.model.Role;
 import hu.flowacademy.netbank.model.User;
-import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
 
 import java.util.List;
 
@@ -36,8 +32,9 @@ public class UserHelper {
         return user;
     }
 
-    public static List<User> getAll() {
+    public static List<User> getAll(String token) {
         return given()
+                .header(LoginHelper.buildAuthorization(token))
                 .log().all()
             .when()
                 .get(API_USERS)
@@ -48,14 +45,15 @@ public class UserHelper {
                 .extract().body().as(new TypeRef<>() {});
     }
 
-    public static User getUserByUsername(User createdUser) {
-        return getAll().stream().filter(u -> u.getEmail().equals(createdUser.getEmail()))
+    public static User getUserByUsername(String token, User createdUser) {
+        return getAll(token).stream().filter(u -> u.getEmail().equals(createdUser.getEmail()))
                 .findFirst().orElseThrow();
     }
 
-    public static User update(User user) {
+    public static User update(String token, User user) {
         return given()
                 .log().all()
+                .header(LoginHelper.buildAuthorization(token))
                 .body(user)
                 .contentType(ContentType.JSON)
             .when()
@@ -66,9 +64,10 @@ public class UserHelper {
                 .extract().body().as(User.class);
     }
 
-    public static User findOne(String id) {
+    public static User findOne(String token, String id) {
         return given()
                 .log().all()
+                .header(LoginHelper.buildAuthorization(token))
                 .contentType(ContentType.JSON)
             .when()
                 .get(API_USERS+"/"+id)
@@ -78,9 +77,10 @@ public class UserHelper {
                 .extract().body().as(User.class);
     }
 
-    public static void delete(String id) {
+    public static void delete(String token, String id) {
         given()
             .log().all()
+            .header(LoginHelper.buildAuthorization(token))
             .contentType(ContentType.JSON)
         .when()
             .delete(API_USERS+"/"+id)

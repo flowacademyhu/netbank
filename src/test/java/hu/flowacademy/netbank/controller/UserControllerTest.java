@@ -1,7 +1,7 @@
 package hu.flowacademy.netbank.controller;
 
 import com.github.javafaker.Faker;
-import hu.flowacademy.netbank.model.Role;
+import hu.flowacademy.netbank.controller.helpers.LoginHelper;
 import hu.flowacademy.netbank.model.User;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +37,13 @@ class UserControllerTest {
     @Test
     public void testUserUpdate() {
         User createdUser = signUp();
-        User user = getUserByUsername(createdUser);
+        String token = LoginHelper.login(createdUser.getEmail(), createdUser.getPassword());
 
-        findOne(user.getId());
+        User user = getUserByUsername(token, createdUser);
 
-        User updatedUser = update(user.toBuilder()
+        findOne(token, user.getId());
+
+        User updatedUser = update(token, user.toBuilder()
                 .fullName(faker.name().fullName() + UUID.randomUUID())
                 .build());
 
@@ -51,8 +53,9 @@ class UserControllerTest {
     @Test
     public void testDeleteUser() {
         User createdUser = signUp();
-        User user = getUserByUsername(createdUser);
-        delete(user.getId());
+        String token = LoginHelper.login(createdUser.getEmail(), createdUser.getPassword());
+        User user = getUserByUsername(token, createdUser);
+        delete(token, user.getId());
     }
 
 }

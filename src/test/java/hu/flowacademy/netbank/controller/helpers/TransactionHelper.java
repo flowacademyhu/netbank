@@ -19,7 +19,7 @@ public class TransactionHelper {
 
     private static Faker faker = new Faker();
 
-    public static TransactionCreateDTO create(String sender, String receiver) {
+    public static TransactionCreateDTO create(String token, String sender, String receiver) {
         TransactionCreateDTO transaction = TransactionCreateDTO.builder()
                 .amount(BigDecimal.valueOf(faker.number().numberBetween(100, 10000)))
                 .senderAccountId(sender)
@@ -30,6 +30,7 @@ public class TransactionHelper {
                 .log().all()
                 .body(transaction)
                 .contentType(ContentType.JSON)
+                .header(LoginHelper.buildAuthorization(token))
         .when()
                 .post(API_TRANSACTIONS)
         .then()
@@ -39,10 +40,11 @@ public class TransactionHelper {
         return transaction;
     }
 
-    public static void revert(String id) {
+    public static void revert(String token, String id) {
         given()
                 .log().all()
                 .contentType(ContentType.JSON)
+                .header(LoginHelper.buildAuthorization(token))
         .when()
                 .post(API_TRANSACTIONS+"/"+id+"/revert")
         .then()
@@ -50,10 +52,11 @@ public class TransactionHelper {
                 .statusCode(204);
     }
 
-    public static List<Transaction> findAll() {
+    public static List<Transaction> findAll(String token) {
         return given()
                 .log().all()
                 .contentType(ContentType.JSON)
+                .header(LoginHelper.buildAuthorization(token))
         .when()
                 .post(API_TRANSACTIONS)
         .then()
@@ -62,10 +65,11 @@ public class TransactionHelper {
                 .extract().body().as(new TypeRef<>() {});
     }
 
-    public static Transaction findOne(String id) {
+    public static Transaction findOne(String token, String id) {
         return given()
                 .log().all()
                 .contentType(ContentType.JSON)
+                .header(LoginHelper.buildAuthorization(token))
         .when()
                 .post(API_TRANSACTIONS+"/"+id)
         .then()

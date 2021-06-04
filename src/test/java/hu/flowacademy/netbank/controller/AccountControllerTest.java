@@ -1,6 +1,6 @@
 package hu.flowacademy.netbank.controller;
 
-import hu.flowacademy.netbank.controller.helpers.AccountHelper;
+import hu.flowacademy.netbank.controller.helpers.LoginHelper;
 import hu.flowacademy.netbank.controller.helpers.UserHelper;
 import hu.flowacademy.netbank.model.Account;
 import hu.flowacademy.netbank.model.User;
@@ -13,7 +13,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static hu.flowacademy.netbank.controller.helpers.AccountHelper.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
@@ -27,21 +26,24 @@ class AccountControllerTest {
     @BeforeEach
     public void beforeAll() {
         RestAssured.port = port;
-        user = UserHelper.getUserByUsername(UserHelper.signUp());
+        User signedUp = UserHelper.signUp();
+        user = UserHelper.getUserByUsername(LoginHelper.login(signedUp.getEmail(), signedUp.getPassword()), signedUp);
     }
 
     @Test
     public void testCreateAccount() {
-        create(user);
+        String token = LoginHelper.login(user.getEmail(), user.getPassword());
+        create(token, user);
     }
 
     @Test
     public void testAddMoneyAccount() {
-        Account created = create(user);
-        Account account = findAll().stream().filter(a -> a.getOwner().equals(user)
+        String token = LoginHelper.login(user.getEmail(), user.getPassword());
+        Account created = create(token, user);
+        Account account = findAll(token).stream().filter(a -> a.getOwner().equals(user)
                 && a.getCurrency().equals(created.getCurrency())).findFirst().orElseThrow();
 
-        addMoney(account.getId(), account.getCurrency());
+        addMoney(token, account.getId(), account.getCurrency());
     }
 
 }

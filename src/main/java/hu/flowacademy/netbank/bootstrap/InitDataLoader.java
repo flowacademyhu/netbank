@@ -1,5 +1,6 @@
 package hu.flowacademy.netbank.bootstrap;
 
+import hu.flowacademy.netbank.config.WebSecurityConfig;
 import hu.flowacademy.netbank.model.Account;
 import hu.flowacademy.netbank.model.Currency;
 import hu.flowacademy.netbank.model.Role;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,7 @@ public class InitDataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.rootPassword}")
     private String rootPassword;
@@ -37,7 +41,7 @@ public class InitDataLoader implements CommandLineRunner {
                 .orElseGet(() -> userRepository.save(
                         User.builder()
                                 .fullName("bank")
-                                .password(rootPassword)
+                                .password(passwordEncoder.encode(rootPassword))
                                 .role(Role.ADMIN)
                                 .email(BANK_USER_EMAIL)
                                 .build()
