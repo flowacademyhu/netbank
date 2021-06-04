@@ -34,8 +34,7 @@ public class AccountService {
                         account.toBuilder()
                                 .amount(account.getAmount().add(addMoneyDTO.getAmount()))
                                 .build()
-                        )
-                        , () -> {
+                        ), () -> {
                             throw new ValidationException("unable to add money to the account");
                         });
     }

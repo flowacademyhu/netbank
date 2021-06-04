@@ -40,10 +40,10 @@ public class AccountHelper {
         return account;
     }
 
-    public static void addMoney(String id) {
+    public static void addMoney(String id, Currency currency) {
         AddMoneyDTO account = AddMoneyDTO.builder()
                 .amount(BigDecimal.valueOf(faker.number().numberBetween(10000, 1000000)))
-                .currency(getRandomCurrency())
+                .currency(currency)
                 .build();
 
         given()

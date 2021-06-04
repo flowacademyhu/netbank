@@ -54,7 +54,7 @@ public class UserRepositoryTest {
         assertThrows(DataIntegrityViolationException.class, () -> {
             userRepository.save(user.toBuilder().build());
             userRepository.save(user.toBuilder().build());
-            userRepository.findAll();
+            userRepository.flush();
         });
     }
 

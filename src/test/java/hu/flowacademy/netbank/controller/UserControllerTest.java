@@ -31,14 +31,13 @@ class UserControllerTest {
 
     @Test
     public void testUserCreate() {
-        signUp(Role.USER);
+        signUp();
     }
 
     @Test
     public void testUserUpdate() {
-        User createdUser = signUp(Role.USER);
-        User user = getAll().stream().filter(u -> u.getEmail().equals(createdUser.getEmail()))
-                .findFirst().orElseThrow();
+        User createdUser = signUp();
+        User user = getUserByUsername(createdUser);
 
         findOne(user.getId());
 
@@ -51,9 +50,8 @@ class UserControllerTest {
 
     @Test
     public void testDeleteUser() {
-        User createdUser = signUp(Role.USER);
-        User user = getAll().stream().filter(u -> u.getEmail().equals(createdUser.getEmail()))
-                .findFirst().orElseThrow();
+        User createdUser = signUp();
+        User user = getUserByUsername(createdUser);
         delete(user.getId());
     }
 

@@ -18,12 +18,11 @@ public class UserHelper {
     public static final String API_USERS = "/api/users";
     private static Faker faker = new Faker();
 
-    public static User signUp(Role role) {
+    public static User signUp() {
         User user = User.builder()
                 .email(faker.internet().emailAddress())
                 .password("123password")
                 .fullName(faker.name().fullName())
-                .role(role)
                 .build();
         given()
                 .log().all()
@@ -47,6 +46,11 @@ public class UserHelper {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract().body().as(new TypeRef<>() {});
+    }
+
+    public static User getUserByUsername(User createdUser) {
+        return getAll().stream().filter(u -> u.getEmail().equals(createdUser.getEmail()))
+                .findFirst().orElseThrow();
     }
 
     public static User update(User user) {
