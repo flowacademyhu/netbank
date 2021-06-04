@@ -21,7 +21,7 @@ public class User {
     private String email;
     @Column(nullable = false)
     @ToString.Exclude
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Column(nullable = false)
     private String fullName;
