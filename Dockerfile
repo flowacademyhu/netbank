@@ -14,7 +14,7 @@ FROM openjdk:11-slim
 WORKDIR /app
 COPY --from=builder /build/target/*.jar /app/netbank.jar
 
-ENV server.port=8080
+ENV SERVER_PORT=8080
 
 EXPOSE 8080
 
