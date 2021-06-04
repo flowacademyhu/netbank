@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    name: Deploy the app to heroku
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.4.6
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "flow-netbank"
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          usedocker: true
+        env:
+          SERVER_PORT: 80
