@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -41,14 +42,17 @@ public class InitDataLoader implements CommandLineRunner {
                                 .email(BANK_USER_EMAIL)
                                 .build()
                 ));
-        accountRepository.findFirstByOwner_IdAndCurrency(owner.getId(), Currency.HUF)
-                .orElseGet(() -> accountRepository.save(
-                        Account.builder()
-                                .amount(BigDecimal.valueOf(Integer.MAX_VALUE))
-                                .owner(owner)
-                                .currency(Currency.HUF)
-                                .accountNumber(UUID.randomUUID().toString())
-                                .build()
-                ));
+        Stream.of(Currency.values())
+                .forEach(currency ->
+                        accountRepository.findFirstByOwner_IdAndCurrency(owner.getId(), currency)
+                                .orElseGet(() -> accountRepository.save(
+                                        Account.builder()
+                                                .amount(BigDecimal.valueOf(Integer.MAX_VALUE))
+                                                .owner(owner)
+                                                .currency(currency)
+                                                .accountNumber(UUID.randomUUID().toString())
+                                                .build()
+                                ))
+                );
     }
 }
