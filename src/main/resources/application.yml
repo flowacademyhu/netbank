@@ -9,12 +9,14 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/netbank
+#    url: jdbc:mysql://localhost:3306/netbank
+    url: jdbc:postgresql://localhost:5432/netbank
     username: netbank
     password: netbank
   jpa:
     show-sql: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
 

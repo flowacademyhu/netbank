@@ -13,6 +13,7 @@ services:
       - 8001:8080
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/netbank
+
   adminer:
     image: adminer
     restart: always
